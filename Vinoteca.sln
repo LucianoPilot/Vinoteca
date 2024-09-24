@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35122.118
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vinoteca", "Vinoteca\Vinoteca.csproj", "{FD50752E-57CB-4556-AD19-037B9B925ACB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FD50752E-57CB-4556-AD19-037B9B925ACB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD50752E-57CB-4556-AD19-037B9B925ACB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD50752E-57CB-4556-AD19-037B9B925ACB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD50752E-57CB-4556-AD19-037B9B925ACB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E989DB7E-FD33-4413-9129-267233064266}
+	EndGlobalSection
+EndGlobal
