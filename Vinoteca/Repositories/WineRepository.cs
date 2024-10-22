@@ -12,11 +12,12 @@ namespace Vinoteca.Repositories
             wines = new List<Wine>();
             users = new List<User>();
         }
-        public void AddWine(Wine wine)
+        public async Task AddWine(Wine wine)
         {
-            wine.Id = wines.Count + 1;
-            wines.Add(wine);
+            _context.Wines.Add(wine);
+            await _context.SaveChangesAsync();
         }
+
 
         public List<Wine> GetAllWines()
         {
@@ -36,16 +37,31 @@ namespace Vinoteca.Repositories
                 wine.Stock = newStock;
             }
         }
-        public void AddUser(User user)
+        public async Task AddUser(User user)
         {
-            user.Id = users.Count + 1;
-            users.Add(user);
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
         }
 
-        public List<User> GetAllUsers()
+
+        public async Task<List<User>> GetAllUsers()
         {
-            return users;
+            return await _context.Users.ToListAsync();
         }
+
+        private readonly WineDbContext _context;
+
+            public WineRepository(WineDbContext context)
+            {
+                _context = context;
+            }
+
+        public async Task<Wine> GetWineByIdAsync(int id)
+        {
+            return await _context.Wines.FindAsync(id);
+        }
+
+
     }
 
 }

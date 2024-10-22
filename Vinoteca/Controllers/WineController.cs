@@ -43,6 +43,25 @@ namespace Vinoteca.Controllers
             _repository.UpdateStock(id, newStock);
             return Ok();
         }
+        [HttpGet("byVariety")]
+        public async Task<IActionResult> GetWinesByVariety(string variety)
+        {
+            var wines = await WineRepository.GetWinesByVarietyAsync(variety);
+            return Ok(wines);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateWineStock(int id, int newStock)
+        {
+            var wine = await WineRepository.GetWineByIdAsync(id);
+            if (wine == null) return NotFound();
+
+            wine.Stock = newStock;
+            await WineRepository.UpdateWineAsync(wine);
+            return NoContent();
+        }
+
+
     }
 
 }
