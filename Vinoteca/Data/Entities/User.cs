@@ -1,4 +1,4 @@
-﻿namespace Vinoteca.Entities
+﻿namespace Vinoteca.Data.Entities
 {
     public class User
     {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Vinoteca.Entities;
+using Vinoteca.Data.Entities;
 using Vinoteca.Repositories;
 
 namespace Vinoteca.Controllers

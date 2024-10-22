@@ -1,4 +1,4 @@
-﻿using Vinoteca.Entities;
+﻿using Vinoteca.Data.Entities;
 
 namespace Vinoteca.Repositories
 {
