@@ -14,7 +14,6 @@ namespace Vinoteca.Data
         {
 
         }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
