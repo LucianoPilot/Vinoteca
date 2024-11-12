@@ -1,50 +1,86 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Vinoteca.Data.Data;
-using Vinoteca.Repositories;
+using Microsoft.OpenApi.Models;
+using Vinoteca.Data.Interfaces;
+using Vinoteca.Data.Repositories;
+using Vinoteca.Services.Interface;
+using Vinoteca.Services;
+using Vinoteca.Data;
 
-
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<WineInventoryDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("WineInventoryDB")));
-
-services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+namespace WineCellar
+{
+    public class Program
     {
-        options.TokenValidationParameters = new TokenValidationParameters
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+
+            // Add services to the container.
+
+            builder.Services.AddControllers();
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(setupAction =>
+            {
+                setupAction.AddSecurityDefinition("AgendaApiBearerAuth", new OpenApiSecurityScheme() //Esto va a permitir usar swagger con el token.
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    Description = "Acá pegar el token generado al loguearse."
+                });
+
+                setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "AgendaApiBearerAuth" } //Tiene que coincidir con el id seteado arriba en la definición
+                }, new List<string>() }
+    });
+            });
+
+            builder.Services.AddAuthentication("Bearer") //"Bearer" es el tipo de auntenticación que tenemos que elegir después en PostMan para pasarle el token
+    .AddJwtBearer(options => //Acá definimos la configuración de la autenticación. le decimos qué cosas queremos comprobar. La fecha de expiración se valida por defecto.
+    {
+        options.TokenValidationParameters = new()
         {
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = "yourIssuer",
-            ValidAudience = "yourAudience",
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("yourSecretKey"))
+            ValidIssuer = builder.Configuration["Authentication:Issuer"],
+            ValidAudience = builder.Configuration["Authentication:Audience"],
+            IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(builder.Configuration["Authentication:SecretForKey"]))
         };
-    });
+    }
+);
 
 
-var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+            builder.Services.AddDbContext<VinotecaContext>(dbContextOptions => dbContextOptions.UseSqlite(builder.Configuration["ConnectionStrings:WineCellarContextAPIDBConnectionString"]));
+
+
+
+            var app = builder.Build();
+
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseAuthentication();
+
+            app.UseAuthorization();
+
+
+            app.MapControllers();
+
+            app.Run();
+        }
+    }
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();

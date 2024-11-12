@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Vinoteca.Data.Data;
+using Vinoteca.Data;
 
 #nullable disable
 
 namespace Vinoteca.Migrations
 {
-    [DbContext(typeof(WineInventoryDbContext))]
+    [DbContext(typeof(VinotecaContext))]
     [Migration("20241022171036_InitialCreate")]
     partial class InitialCreate
     {

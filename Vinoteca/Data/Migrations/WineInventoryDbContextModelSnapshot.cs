@@ -3,14 +3,14 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Vinoteca.Data.Data;
+using Vinoteca.Data;
 
 #nullable disable
 
 namespace Vinoteca.Migrations
 {
-    [DbContext(typeof(WineInventoryDbContext))]
-    partial class WineInventoryDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(VinotecaContext))]
+    partial class VinotecaContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

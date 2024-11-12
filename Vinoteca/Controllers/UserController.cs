@@ -1,32 +1,29 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Vinoteca.Data.Entities;
-using Vinoteca.Repositories;
+using Vinoteca.Data.Repositories;
+using Vinoteca.Models;
+using Vinoteca.Services.Interface;
 
 namespace Vinoteca.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
-        private readonly WineRepository _repository;
-
-        public UserController(WineRepository repository)
+        private readonly IUserService _userService;
+        public UserController(IUserService userService)
         {
-            _repository = repository;
+            _userService = userService;
         }
 
         [HttpPost]
-        public IActionResult AddUser([FromBody] User user)
+        public IActionResult CreateUser([FromBody] CreateUserDTO dto)
         {
-            _repository.AddUser(user);
-            return Ok(user);
-        }
+            _userService.CreateUser(dto);
+            return Ok(dto);
 
-        [HttpGet]
-        public IActionResult GetUsers()
-        {
-            var users = _repository.GetAllUsers();
-            return Ok(users);
         }
     }
 

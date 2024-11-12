@@ -1,67 +1,61 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Vinoteca.Data.Entities;
-using Vinoteca.Repositories;
-
-namespace Vinoteca.Controllers
+﻿using Models.DTOs;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Vinoteca.Models;
+using Vinoteca.Services.Interface;
+namespace WineCellar.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class WineController : ControllerBase
     {
-        private readonly WineRepository _repository;
+        private readonly IWineService _wineService;
 
-        public WineController(WineRepository repository)
+        public WineController(IWineService wineService)
         {
-            _repository = repository;
+            _wineService = wineService;
         }
 
         [HttpPost]
-        public IActionResult AddWine([FromBody] Wine wine)
+        public IActionResult CreateWine([FromBody] CreateWineDTO dto)
         {
-            _repository.AddWine(wine);
-            return Ok(wine);
+            _wineService.CreateWine(dto);
+            return Ok(dto);
         }
 
         [HttpGet]
-        public IActionResult GetWines()
+        public IActionResult GetAllWine()
         {
-            var wines = _repository.GetAllWines();
+            var wines = _wineService.GetAllWine();
             return Ok(wines);
         }
 
-        [HttpGet("{name}")]
-        public IActionResult GetWineByName(string name)
+        [HttpGet("variety/{variety}")]
+        public IActionResult GetStockByVariety(string variety)
         {
-            var wine = _repository.GetWineByName(name);
-            if (wine == null) return NotFound();
-            return Ok(wine);
+            var stock = _wineService.GetStockByVariety(variety);
+
+            if (stock == null || stock.Count == 0)
+                return NotFound($"No se encontro stock para ésa variedad: {variety}");
+
+            return Ok(stock);
         }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateStock(int id, [FromBody] int newStock)
+        [HttpPut("{wineId}/stock")]
+        public IActionResult UpdateWineStock(int wineId, [FromBody] UpdateWineStockDTO dto)
         {
-            _repository.UpdateStock(id, newStock);
-            return Ok();
-        }
-        [HttpGet("byVariety")]
-        public async Task<IActionResult> GetWinesByVariety(string variety)
-        {
-            var wines = await WineRepository.GetWinesByVarietyAsync(variety);
-            return Ok(wines);
+            try
+            {
+                _wineService.UpdateWineStock(wineId, dto);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateWineStock(int id, int newStock)
-        {
-            var wine = await WineRepository.GetWineByIdAsync(id);
-            if (wine == null) return NotFound();
-
-            wine.Stock = newStock;
-            await WineRepository.UpdateWineAsync(wine);
-            return NoContent();
-        }
 
 
     }
-
 }

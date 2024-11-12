@@ -1,13 +1,20 @@
-﻿namespace Vinoteca.Data.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace Vinoteca.Data.Entities
 {
     public class User
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        // Nombre de usuario, requerido y único
-        public string Username { get; set; } = string.Empty;
+        [Required]
+        public string UserName { get; set; } = string.Empty;
 
-        // Contraseña, al menos 8 caracteres
+        [MinLength(8)]
         public string Password { get; set; }
+
+        public Rol Rol { get; set; }
     }
 }
